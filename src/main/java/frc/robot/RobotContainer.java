@@ -18,7 +18,7 @@ import frc.robot.subsystems.CANDrivetrain;
 import frc.robot.subsystems.CANLauncher;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * 1 This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
