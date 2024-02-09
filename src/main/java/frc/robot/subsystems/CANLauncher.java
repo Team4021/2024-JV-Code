@@ -6,6 +6,9 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.LauncherConstants.*;
 
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.core.CoreTalonFX;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 //import com.revrobotics.CANSparkMax;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -15,14 +18,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class CANLauncher extends SubsystemBase {
   //CANSparkMax m_launchWheel;
   //CANSparkMax m_feedWheel;
-  WPI_VictorSPX m_launchWheel;
+  CoreTalonFX m_launchWheel2;
+  CoreTalonFX m_launchWheel;
   WPI_VictorSPX m_feedWheel;
+  final VoltageOut m_request = new VoltageOut(0);
 
   /** Creates a new Launcher. */
   public CANLauncher() {
     //m_launchWheel = new CANSparkMax(kLauncherID, MotorType.kBrushed);
     //m_feedWheel = new CANSparkMax(kFeederID, MotorType.kBrushed);
-    m_launchWheel = new WPI_VictorSPX(kLauncherID);
+    m_launchWheel = new CoreTalonFX(kLauncherID);
+    m_launchWheel2 = new CoreTalonFX(7);
     m_feedWheel = new WPI_VictorSPX(kFeederID);
 
     //m_launchWheel.setSmartCurrentLimit(kLauncherCurrentLimit);
@@ -67,7 +73,8 @@ public class CANLauncher extends SubsystemBase {
 
   // An accessor method to set the speed (technically the output percentage) of the launch wheel
   public void setLaunchWheel(double speed) {
-    m_launchWheel.set(speed);
+    m_launchWheel.setControl(m_request.withOutput(speed));
+    m_launchWheel2.setControl(m_request.withOutput(-speed));
   }
 
   // An accessor method to set the speed (technically the output percentage) of the feed wheel
@@ -78,7 +85,8 @@ public class CANLauncher extends SubsystemBase {
   // A helper method to stop both wheels. You could skip having a method like this and call the
   // individual accessors with speed = 0 instead
   public void stop() {
-    m_launchWheel.set(0);
+    m_launchWheel.setControl(m_request.withOutput(0));
+    m_launchWheel2.setControl(m_request.withOutput(0));
     m_feedWheel.set(0);
   }
 }

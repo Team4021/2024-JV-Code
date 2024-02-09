@@ -4,9 +4,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
@@ -33,9 +35,15 @@ public class RobotContainer {
   /*The gamepad provided in the KOP shows up like an XBox controller if the mode switch is set to X mode using the
    * switch on the top.*/
   private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+      new CommandXboxController(OperatorConstants.kOperatorControllerPort);
   private final CommandXboxController m_operatorController =
       new CommandXboxController(OperatorConstants.kOperatorControllerPort);
+  // private final GenericHID m_strafeGenericHID =
+  //     new GenericHID(1);
+  // private final JoystickButton m_Trigger =
+  //     new JoystickButton(m_strafeGenericHID, 1);
+  // private final JoystickButton m_button2 =
+  //     new JoystickButton(m_strafeGenericHID, 2);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -54,7 +62,7 @@ public class RobotContainer {
         new RunCommand(
             () ->
                 m_drivetrain.arcadeDrive(
-                    -m_driverController.getLeftY(), -m_driverController.getRightX()),
+                    m_driverController.getLeftY(), m_driverController.getRightX()),
             m_drivetrain));
 
     /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
@@ -66,10 +74,20 @@ public class RobotContainer {
                 .withTimeout(LauncherConstants.kLauncherDelay)
                 .andThen(new LaunchNote(m_launcher))
                 .handleInterrupt(() -> m_launcher.stop()));
+    m_operatorController
+        .b().whileTrue(new RunCommand( () -> m_launcher.setLaunchWheel(1), m_launcher));
+    m_operatorController
+        .y().whileTrue(new RunCommand( () -> m_launcher.setFeedWheel(1), m_launcher));
 
     // Set up a binding to run the intake command while the operator is pressing and holding the
     // left Bumper
     m_operatorController.leftBumper().whileTrue(m_launcher.getIntakeCommand());
+    // m_Trigger.whileTrue(
+    //         new PrepareLaunch(m_launcher)
+    //             .withTimeout(LauncherConstants.kLauncherDelay)
+    //             .andThen(new LaunchNote(m_launcher))
+    //             .handleInterrupt(() -> m_launcher.stop()));
+    // m_button2.whileTrue(m_launcher.getIntakeCommand());
   }
 
   /**

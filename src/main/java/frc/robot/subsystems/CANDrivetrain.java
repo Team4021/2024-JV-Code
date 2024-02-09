@@ -28,6 +28,7 @@ public class CANDrivetrain extends SubsystemBase {
   /*Constructor. This method is called when an instance of the class is created. This should generally be used to set up
    * member variables and perform any configuration or set up necessary on hardware.
    */
+
   public CANDrivetrain() {
       WPI_VictorSPX leftFront = new WPI_VictorSPX(kLeftFrontID);
       WPI_VictorSPX leftRear = new WPI_VictorSPX(kLeftRearID);
@@ -52,6 +53,7 @@ public class CANDrivetrain extends SubsystemBase {
 
       // Invert the left side so both side drive forward with positive motor outputs
       leftFront.setInverted(true);
+      leftRear.setInverted(true);
       rightFront.setInverted(false);
 
       // Put the front motors into the differential drive object. This will control all 4 motors with
