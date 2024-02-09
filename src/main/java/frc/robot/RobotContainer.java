@@ -64,6 +64,11 @@ public class RobotContainer {
                 m_drivetrain.arcadeDrive(
                     m_driverController.getLeftY(), m_driverController.getRightX()),
             m_drivetrain));
+    m_launcher.setDefaultCommand(
+        new RunCommand(
+            () ->
+                m_launcher.stop(),
+            m_launcher));
 
     /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
      * command for 1 seconds and then run the LaunchNote command */
@@ -72,10 +77,13 @@ public class RobotContainer {
         .whileTrue(
             new PrepareLaunch(m_launcher)
                 .withTimeout(LauncherConstants.kLauncherDelay)
-                .andThen(new LaunchNote(m_launcher))
+                .andThen(new LaunchNote(m_launcher, 12))
                 .handleInterrupt(() -> m_launcher.stop()));
     m_operatorController
-        .b().whileTrue(new RunCommand( () -> m_launcher.setLaunchWheel(1), m_launcher));
+        .b().whileTrue(new PrepareLaunch(m_launcher)
+                            .withTimeout(LauncherConstants.kLauncherDelay)
+                            .andThen(new LaunchNote(m_launcher, 0.4))
+                            .handleInterrupt(() -> m_launcher.stop()));
     m_operatorController
         .y().whileTrue(new RunCommand( () -> m_launcher.setFeedWheel(1), m_launcher));
 
