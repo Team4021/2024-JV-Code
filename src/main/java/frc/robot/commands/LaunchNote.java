@@ -16,21 +16,23 @@ import frc.robot.subsystems.CANLauncher;
 public class LaunchNote extends Command {
   // PWMLauncher m_launcher;
   CANLauncher m_launcher;
+  double m_speed;
 
   /** Creates a new LaunchNote. */
-  public LaunchNote(CANLauncher launcher) {
+  public LaunchNote(CANLauncher launcher, double speed) {
     // save the launcher system internally
     m_launcher = launcher;
 
     // indicate that this command requires the launcher system
     addRequirements(m_launcher);
+    m_speed = speed;
   }
 
   // The initialize method is called when the command is initially scheduled.
   @Override
   public void initialize() {
     // Set the wheels to launching speed
-    m_launcher.setLaunchWheel(kLauncherSpeed);
+    m_launcher.setLaunchWheel(m_speed);
     m_launcher.setFeedWheel(kLaunchFeederSpeed);
   }
 
